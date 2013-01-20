@@ -1,0 +1,6 @@
+G1: NOT x2
+G2: AND x1 G1
+G3: OR G2 x3
+G4: NOT G2
+G5: OR G4 x3
+O: G3 G5
