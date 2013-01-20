@@ -2,7 +2,7 @@ package pl.ola.logicgate.parts;
 
 import java.util.ArrayList;
 
-public class Gate implements LogicElement {
+public class Gate implements LogicElement, Comparable<Gate> {
 
 	/**
 	 * State of an input (H/L etc.)
@@ -91,6 +91,11 @@ public class Gate implements LogicElement {
 	@Override
 	public void setState(EState state) {
 		mTempState = state;
+	}
+
+	@Override
+	public int compareTo(Gate o) {
+		return mNumber - o.mNumber;
 	}
 
 }

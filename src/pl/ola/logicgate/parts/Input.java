@@ -1,6 +1,6 @@
 package pl.ola.logicgate.parts;
 
-public class Input implements LogicElement {
+public class Input implements LogicElement, Comparable<Input> {
 
 	/**
 	 * Input number.
@@ -39,5 +39,10 @@ public class Input implements LogicElement {
 	@Override
 	public void setState(EState state) {
 		mTempState = state;
+	}
+
+	@Override
+	public int compareTo(Input o) {
+		return (mNumber - o.mNumber);
 	}
 }

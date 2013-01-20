@@ -33,11 +33,11 @@ public class SketchTest {
 		System.out.println(sketch.toString());
 
 		for (int x1 = 0; x1 < 2; x1++) {
-			Boolean xb1 = x1 == 0 ? Boolean.TRUE : Boolean.FALSE;
+			Boolean xb1 = x1 == 0 ? Boolean.FALSE : Boolean.TRUE;
 			for (int x2 = 0; x2 < 2; x2++) {
-				Boolean xb2 = x2 == 0 ? Boolean.TRUE : Boolean.FALSE;
+				Boolean xb2 = x2 == 0 ? Boolean.FALSE : Boolean.TRUE;
 				for (int x3 = 0; x3 < 2; x3++) {
-					Boolean xb3 = x3 == 0 ? Boolean.TRUE : Boolean.FALSE;
+					Boolean xb3 = x3 == 0 ? Boolean.FALSE : Boolean.TRUE;
 
 					ArrayList<Boolean> inputs = new ArrayList<Boolean>(3);
 					inputs.add(xb1);

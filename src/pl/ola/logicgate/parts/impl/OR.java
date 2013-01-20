@@ -12,6 +12,8 @@ public class OR implements LogicGate {
 		if (inputs.size() != this.getInputCount())
 			throw new IllegalArgumentException(
 					"List size mismatch the argument size of the gate.");
+		assert (!inputs.contains(null));
+
 		if (inputs.contains(EState.TRUE))
 			return EState.TRUE;
 		if (inputs.contains(EState.FALSE)) {

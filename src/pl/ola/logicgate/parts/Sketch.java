@@ -1,9 +1,9 @@
 package pl.ola.logicgate.parts;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Logic gate sketch class.
@@ -15,22 +15,34 @@ public class Sketch {
 	/**
 	 * Input list.
 	 */
-	private ArrayList<Input> mInputs;
+	private final ArrayList<Input> mInputs;
 
 	/**
 	 * Collection of gates in a sketch.
 	 */
-	private ArrayList<Gate> mGates;
+	private final ArrayList<Gate> mGates;
 
 	/**
 	 * List of outputs of the Sketch.
 	 */
-	private ArrayList<LogicElement> mOutputs;
+	private final ArrayList<LogicElement> mOutputs;
 
+	/**
+	 * Creates new Sketch.
+	 * 
+	 * @param inputs
+	 *            List of inputs (may be not sorted).
+	 * @param gates
+	 *            List of gates (may be not sorted).
+	 * @param outputs
+	 *            List of outputs (order doesn't matter).
+	 */
 	public Sketch(ArrayList<Input> inputs, ArrayList<Gate> gates,
 			ArrayList<LogicElement> outputs) {
 		this.mInputs = inputs;
+		Collections.sort(this.mInputs);
 		this.mGates = gates;
+		Collections.sort(this.mGates);
 		this.mOutputs = outputs;
 
 	}
@@ -58,11 +70,8 @@ public class Sketch {
 	 * 
 	 */
 	public HashMap<Gate, EState> goThrough(ArrayList<Boolean> vStateList) {
-		if (vStateList.size() != mInputs.size())
-			throw new IllegalArgumentException("Not compatible sizes.");
-		// Initialisation
-		HashMap<Gate, EState> result = new HashMap<Gate, EState>();
-		boolean flag_countAgain;
+		// Assertions
+		assert (vStateList.size() == mInputs.size());
 		// Set inputs to a given state.
 		for (int i = 0; i < vStateList.size(); ++i) {
 			Boolean state = vStateList.get(i);
@@ -74,30 +83,42 @@ public class Sketch {
 			}
 			mInputs.get(i).setState(vState);
 		}
+		// Initialisation
+		HashMap<Gate, EState> result = new HashMap<Gate, EState>();
+		ArrayList<Gate> gatesUnresolved = new ArrayList<Gate>(mGates);
 
-		do {
-			flag_countAgain = false;
-			for (Map.Entry<Integer, Gate> gate : mGates.entrySet()) {
+		// do {
+		for (Iterator<Gate> vIterator = gatesUnresolved.iterator(); vIterator
+				.hasNext();) {
+			Gate vGate = (Gate) vIterator.next();
 
-				// 1. Get gate inputs
-				// 2. Get input values (if they are available)
-				// 3. If there are values possesed from previous point,
-				// calculate
-				// gate
+			boolean corruptedGate = false;
 
-				Gate vGate = gate.getValue();
-				ArrayList<EState> inputsStates = new ArrayList<EState>();
-				for (LogicElement input : vGate.getInputs()) {
-					EState state = input.getState();
-					inputsStates.add(state);
-					if (state == null) {
-						flag_countAgain = true;
-						continue;
-					}
+			// 1. Get gate inputs
+			// 2. Get input values (if they are available)
+			// 3. If there are values possesed from previous point,
+			// calculate
+			// gate
+
+			ArrayList<EState> inputsStates = new ArrayList<EState>();
+			for (LogicElement input : vGate.getInputs()) {
+				EState state = input.getState();
+				if (state == null) {
+					corruptedGate = true;
+					break;
 				}
-				result.put(vGate, vGate.calculate(inputsStates));
+				inputsStates.add(state);
+
 			}
-		} while (flag_countAgain == true);
+			if (!corruptedGate) {
+				EState gateState = vGate.calculate(inputsStates);
+				result.put(vGate, gateState);
+				vGate.setState(gateState);
+				vIterator.remove();
+			}
+		}
+		// System.out.println(gatesUnresolved.size());
+		// } while (gatesUnresolved.size() > 0);
 		return result;
 	}
 
@@ -105,9 +126,9 @@ public class Sketch {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(String.format("Inputs no.: %s\n", mInputs.size()));
-		for (Map.Entry<Integer, Gate> gateEntry : mGates.entrySet()) {
-			sb.append(String.format("Gate %d: %s\n", gateEntry.getKey(),
-					gateEntry.getValue().toString()));
+		for (Gate gate : mGates) {
+			sb.append(String.format("Gate %d: %s\n", gate.getNumber(),
+					gate.toString()));
 		}
 		sb.append("Outputs: ");
 		for (LogicElement le : mOutputs) {

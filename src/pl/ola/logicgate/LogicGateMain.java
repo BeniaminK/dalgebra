@@ -18,7 +18,7 @@ public class LogicGateMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String filepath = "res/sketch1.txt";
+		String filepath = args[0];
 		File file = new File(filepath);
 		IInputManager im = new InputManager();
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
@@ -64,6 +65,10 @@ public class InputManager implements IInputManager {
 				break;
 			}
 		}
-		return new Sketch(inputs, gates, outputs);
+		ArrayList<Gate> gateList = new ArrayList<Gate>();
+		for (Map.Entry<Integer, Gate> entry : gates.entrySet()) {
+			gateList.add(entry.getValue());
+		}
+		return new Sketch(inputs, gateList, outputs);
 	}
 }

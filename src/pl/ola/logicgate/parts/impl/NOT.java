@@ -12,6 +12,8 @@ public class NOT implements LogicGate {
 		if (inputs.size() != this.getInputCount())
 			throw new IllegalArgumentException(
 					"List size mismatch the argument size of the gate.");
+		assert (!inputs.contains(null));
+		
 		if (inputs.get(0) == EState.D)
 			return EState.NOT_D;
 		if (inputs.get(0) == EState.FALSE)
